@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="邓世豪的个人简历，专注于大语言模型推理、GPU 加速与高性能计算。">
+  <meta name="theme-color" content="#f2f3f5">
+  <title>邓世豪 - 简历</title>
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("resume-theme");
+      const systemTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : systemTheme;
+    } catch {
+      document.documentElement.dataset.theme = "light";
+    }
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #ffffff;
+      --canvas: #f2f3f5;
+      --ink: #18202a;
+      --muted: #5d6875;
+      --body-copy: #35414d;
+      --line: #d8dde3;
+      --accent: #18202a;
+      --link-line: #a7b0ba;
+      --shadow: 0 12px 36px rgb(31 42 55 / 10%);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      font-synthesis: none;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #151a20;
+      --canvas: #0c1015;
+      --ink: #edf2f7;
+      --muted: #aeb9c4;
+      --body-copy: #d4dde6;
+      --line: #3b4652;
+      --accent: #edf2f7;
+      --link-line: #758291;
+      --shadow: 0 12px 36px rgb(0 0 0 / 28%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--canvas);
+      color: var(--ink);
+      scroll-behavior: auto;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--canvas);
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: inherit;
+      text-decoration-color: var(--link-line);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    a:hover,
+    a:focus-visible {
+      color: var(--accent);
+      text-decoration-color: currentColor;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 2;
+      padding: 8px 12px;
+      background: var(--ink);
+      color: white;
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .page-actions {
+      width: min(210mm, calc(100% - 32px));
+      margin: 20px auto 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .language-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .language-button {
+      min-width: 42px;
+      min-height: 34px;
+      padding: 5px 9px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .language-button[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--paper);
+    }
+
+    .icon-button,
+    .theme-toggle {
+      width: 42px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--muted);
+      font: inherit;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-button:hover,
+    .theme-toggle:hover {
+      color: var(--accent);
+    }
+
+    .theme-toggle[aria-pressed="true"] {
+      color: var(--accent);
+    }
+
+    .resume {
+      width: min(210mm, calc(100% - 32px));
+      min-height: 297mm;
+      margin: 0 auto 32px;
+      padding: 17mm 18mm 15mm;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .resume-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .name {
+      margin: 0;
+      font-size: clamp(36px, 5vw, 52px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      font-weight: 780;
+    }
+
+    .resume-label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .role {
+      margin: 9px 0 0;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .contact-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 3px;
+      justify-items: end;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contact-icon {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      color: currentColor;
+    }
+
+    .contact-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .resume-section {
+      padding-top: 17px;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .entries {
+      display: grid;
+      gap: 12px;
+    }
+
+    .entry {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .education-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .education-entry .entry-title {
+      margin: 0;
+      font-size: 15.5px;
+      line-height: 1.35;
+      font-weight: 760;
+      letter-spacing: -0.01em;
+    }
+
+    .education-entry .entry-subtitle {
+      margin: 0;
+    }
+
+    .education-entry .entry-date {
+      margin: 0;
+    }
+
+    .education-entry .entry-date,
+    .education-entry .entry-subtitle {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .entry-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: baseline;
+    }
+
+    .entry-title {
+      margin: 0;
+      font-size: 15.5px;
+      line-height: 1.35;
+      font-weight: 760;
+      letter-spacing: -0.01em;
+    }
+
+    .entry-date {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .entry-subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .entry-summary {
+      margin: 5px 0 0;
+      color: var(--body-copy);
+    }
+
+    .inline-emphasis {
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    .achievement-list {
+      margin: 5px 0 0;
+      padding-left: 18px;
+      color: var(--body-copy);
+    }
+
+    .achievement-list li {
+      padding-left: 2px;
+    }
+
+    .achievement-list li + li {
+      margin-top: 2px;
+    }
+
+    .achievement-list li::marker {
+      color: var(--accent);
+    }
+
+    .project-link {
+      font-weight: 700;
+    }
+
+    .project-url {
+      margin-left: 8px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .project-note {
+      margin-left: 8px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .honours-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .honour {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      break-inside: avoid;
+    }
+
+    .honour-title {
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.35;
+      font-weight: 720;
+    }
+
+    .honour-copy {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .honour-value {
+      color: var(--accent);
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .skills-list {
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .skill-row--heading {
+      grid-template-columns: 1fr;
+    }
+
+    .skill-row--heading-sep {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .skill-row--heading dt {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .skill-row--heading dd {
+      display: none;
+    }
+
+    .skill-row dt {
+      color: var(--ink);
+      font-weight: 720;
+    }
+
+    .skill-row dd {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        background: var(--paper);
+      }
+
+      .page-actions {
+        width: 100%;
+        margin: 0;
+        padding: 12px 18px 4px;
+      }
+
+      .resume {
+        width: 100%;
+        min-height: 0;
+        margin: 0;
+        padding: 24px 18px 36px;
+        box-shadow: none;
+      }
+
+      .resume-header {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .name {
+        font-size: clamp(36px, 13vw, 48px);
+      }
+
+      .contact-list {
+        justify-items: start;
+      }
+
+      .honours-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 480px) {
+      .entry-heading {
+        grid-template-columns: 1fr;
+        gap: 1px;
+      }
+
+      .entry-date {
+        grid-row: 1;
+      }
+
+      .education-entry {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .project-note {
+        white-space: normal;
+      }
+
+      .skill-row {
+        grid-template-columns: 1fr;
+        gap: 1px;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      html,
+      html[data-theme="dark"] {
+        color-scheme: light;
+        --paper: #ffffff;
+        --canvas: #ffffff;
+        --ink: #18202a;
+        --muted: #5d6875;
+        --body-copy: #35414d;
+        --line: #d8dde3;
+        --accent: #18202a;
+      }
+
+      html,
+      body {
+        width: 210mm;
+        min-width: 0;
+        background: white;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      body {
+        font-size: 13px;
+      }
+
+      .skip-link,
+      .page-actions {
+        display: none !important;
+      }
+
+      .resume {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        padding: 14mm 17mm 12mm;
+        box-shadow: none;
+      }
+
+      .name {
+        font-size: 42px;
+      }
+
+      .resume-header {
+        padding-bottom: 14px;
+      }
+
+      .resume-section {
+        padding-top: 13px;
+      }
+
+      .entries {
+        gap: 9px;
+      }
+
+      a {
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#resume" data-i18n="skip">跳至简历正文</a>
+
+  <div class="page-actions">
+    <button class="icon-button" type="button" aria-label="保存为 PDF" data-i18n-aria-label="savePdf" onclick="window.print()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v13"/>
+        <path d="M5 10l7 7 7-7"/>
+        <path d="M5 21h14"/>
+      </svg>
+    </button>
+    <button class="theme-toggle" type="button" aria-label="切换至暗夜模式" aria-pressed="false">
+      <span class="theme-symbol" aria-hidden="true">☾</span>
+    </button>
+    <div class="language-switch" role="group" aria-label="选择语言" data-i18n-aria-label="languageAria">
+      <button class="language-button" type="button" data-language="zh-CN" aria-pressed="true">中</button>
+      <button class="language-button" type="button" data-language="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+
+  <main class="resume" id="resume">
+    <header class="resume-header">
+      <div>
+        <p class="resume-label" data-i18n="resumeLabel">个人简历</p>
+        <h1 class="name" data-i18n="name">邓世豪</h1>
+      </div>
+      <ul class="contact-list" aria-label="联系方式" data-i18n-aria-label="contactAria">
+        <li>
+          <a class="contact-link" href="mailto:sh.deng.cs@hotmail.com">
+            <span class="contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="1.5"></rect>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+            </span>
+            <span>sh.deng.cs@hotmail.com</span>
+          </a>
+        </li>
+        <li>
+          <a class="contact-link" href="https://github.com/D1376" target="_blank" rel="noreferrer">
+            <span class="contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.084-.729.084-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.292-1.552 3.297-1.23 3.297-1.23.645 1.653.24 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.815 1.103.815 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+              </svg>
+            </span>
+            <span>github.com/D1376</span>
+          </a>
+        </li>
+      </ul>
+    </header>
+
+    <section class="resume-section" aria-labelledby="strengths-title">
+      <h2 class="section-title" id="strengths-title" data-i18n="strengthsTitle">个人优势</h2>
+      <p class="entry-summary" data-i18n="strengthsSummary">深度使用 Coding Agent（Claude Code、Codex）优化开发工作流。熟悉 LLM 推理系统从底层优化到服务部署的全链路工程落地，持续跟进前沿模型架构与推理技术演进。对 Agent 系统等多元 AI 方向保持探索兴趣，并关注网页设计与前端开发实践。</p>
+    </section>
+
+    <section class="resume-section" aria-labelledby="projects-title">
+      <h2 class="section-title" id="projects-title" data-i18n="projectsTitle">项目经历</h2>
+      <div class="entries">
+        <article class="entry">
+          <div class="entry-heading">
+            <h3 class="entry-title">SGLite <span aria-hidden="true">·</span><a class="project-url" href="https://github.com/D1376/SGLite" target="_blank" rel="noreferrer">github.com/D1376/SGLite</a><span aria-hidden="true"> · </span><span class="project-note" data-i18n="sgliteAcceptance">论文获 ICAC 2026 接收</span></h3>
+          </div>
+          <p class="entry-subtitle">Python / CUDA / C++</p>
+          <ul class="achievement-list">
+            <li><span data-i18n="sglitePointOnePrefix">从零实现</span><strong class="inline-emphasis" data-i18n="lightweight">轻量级</strong><span data-i18n="sglitePointOneSuffix">大语言模型推理运行时，覆盖 OpenAI 兼容服务、张量并行、分页式 KV Cache、分块预填充与重叠调度。</span></li>
+            <li data-i18n="sglitePointTwo">集成 FlashAttention、FlashInfer 与 TensorRT-LLM 等注意力后端，贯通模型执行、显存管理与推理服务链路。</li>
+            <li data-i18n="sglitePointThree">在消费级与数据中心级 NVIDIA GPU 上进行对比评测，性能接近主流 vLLM 与 SGLang。</li>
+          </ul>
+        </article>
+
+        <article class="entry">
+          <div class="entry-heading">
+            <h3 class="entry-title"><span data-i18n="capstoneName">大语言模型在嵌入式 GPU 上的高效部署</span><span aria-hidden="true"> · </span><span class="project-note" data-i18n="capstoneScore">毕设 84/100</span></h3>
+          </div>
+          <ul class="achievement-list">
+            <li data-i18n="capstonePointZero">在 NVIDIA Jetson Orin 嵌入式 GPU 设备上开展大语言模型部署。</li>
+            <li data-i18n="capstonePointOne">利用模型量化技术，围绕自定义 CUDA 内核优化、GPU 显存管理与推理性能开展优化、实现和分析。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="resume-section" aria-labelledby="education-title">
+      <h2 class="section-title" id="education-title" data-i18n="educationTitle">教育经历</h2>
+      <div class="entries">
+        <article class="entry education-entry">
+          <h3 class="entry-title" data-i18n="essexName">埃塞克斯大学</h3>
+          <p class="entry-subtitle" data-i18n="essexDegree">计算机科学</p>
+          <time class="entry-date">2024 - 2026</time>
+        </article>
+
+        <article class="entry education-entry">
+          <h3 class="entry-title" data-i18n="jufeName">江西财经大学</h3>
+          <p class="entry-subtitle" data-i18n="jufeDegree">软件工程</p>
+          <time class="entry-date">2022 - 2024</time>
+        </article>
+      </div>
+    </section>
+
+    <section class="resume-section" aria-labelledby="honours-title">
+      <h2 class="section-title" id="honours-title" data-i18n="honoursTitle">学术荣誉</h2>
+      <div class="honours-grid">
+        <article class="honour">
+          <div>
+            <h3 class="honour-title" data-i18n="degreeTitle">一等荣誉学位（1st Class Honours）</h3>
+            <p class="honour-copy" data-i18n="degreeCopy">埃塞克斯大学计算机科学</p>
+          </div>
+          <strong class="honour-value">77 / 100</strong>
+        </article>
+
+        <article class="honour">
+          <div>
+            <h3 class="honour-title" data-i18n="deansTitle">院长卓越名单（Dean's List）</h3>
+            <p class="honour-copy" data-i18n="deansCopy">2024/25 学年学术奖</p>
+          </div>
+          <strong class="honour-value">2024/25</strong>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="resume-section" aria-labelledby="ai-practice-title">
+      <h2 class="section-title" id="ai-practice-title" data-i18n="aiPracticeTitle">AI 工程实践</h2>
+      <ul class="achievement-list">
+        <li data-i18n="aiPractice">使用 Coding Agent（例如 Codex、Claude Code），广泛用于日常运维、代码维护与工程化治理。</li>
+        <li data-i18n="piAgentsResearch">当前学习与研究 Pi Agents，持续探索 Agent 系统与工具调用工作流。</li>
+      </ul>
+    </section>
+
+    <section class="resume-section" aria-labelledby="skills-title">
+      <h2 class="section-title" id="skills-title" data-i18n="skillsTitle">技术能力</h2>
+      <dl class="skills-list">
+        <div class="skill-row skill-row--heading">
+          <dt data-i18n="progLangSubtitle">[编程语言]</dt>
+          <dd></dd>
+        </div>
+        <div class="skill-row">
+          <dt>Python</dt>
+          <dd>PyTorch, NumPy</dd>
+        </div>
+        <div class="skill-row">
+          <dt>C++</dt>
+          <dd>CUDA</dd>
+        </div>
+
+        <div class="skill-row skill-row--heading skill-row--heading-sep">
+          <dt data-i18n="langSubtitle">[语言能力]</dt>
+          <dd></dd>
+        </div>
+        <div class="skill-row">
+          <dt data-i18n="englishLabel">英语</dt>
+          <dd data-i18n="englishScore">IELTS 6.0</dd>
+        </div>
+
+        <div class="skill-row skill-row--heading skill-row--heading-sep">
+          <dt data-i18n="toolsSubtitle">[工具与平台]</dt>
+          <dd></dd>
+        </div>
+        <div class="skill-row">
+          <dt data-i18n="toolsLabel">工具 / 平台</dt>
+          <dd>Linux, Git, Neovim, tmux, macOS</dd>
+        </div>
+        <div class="skill-row">
+          <dt data-i18n="codingAgentLabel">Coding Agent</dt>
+          <dd>Claude Code, Codex</dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+
+  <script>
+    const copy = {
+      "zh-CN": {
+        title: "邓世豪 - 简历",
+        description: "邓世豪的个人简历，专注于大语言模型推理、GPU 加速与高性能计算。",
+        skip: "跳至简历正文",
+        languageAria: "选择语言",
+        savePdf: "保存为 PDF",
+        themeToDark: "切换至暗夜模式",
+        themeToLight: "切换至亮色模式",
+        contactAria: "联系方式",
+        resumeLabel: "个人简历",
+        name: "邓世豪",
+        strengthsTitle: "个人优势",
+        strengthsSummary: "深度使用 Coding Agent 优化开发工作流。熟悉 LLM 推理系统从底层优化到服务部署的全链路工程落地，持续跟进前沿模型架构与推理技术演进。对 Agent 系统等多元 AI 方向保持探索兴趣，并关注网页设计与前端开发实践。",
+        educationTitle: "教育经历",
+        essexName: "埃塞克斯大学",
+        essexDegree: "计算机科学",
+        jufeName: "江西财经大学",
+        jufeDegree: "软件工程",
+        projectsTitle: "项目经历",
+        sgliteAcceptance: "论文获 ICAC 2026 接收",
+        sglitePointOnePrefix: "从零实现",
+        lightweight: "轻量级",
+        sglitePointOneSuffix: "大语言模型推理运行时，覆盖 OpenAI 兼容服务、张量并行、分页式 KV Cache、分块预填充与重叠调度。",
+        sglitePointTwo: "集成 FlashAttention、FlashInfer 与 TensorRT-LLM 等注意力后端，贯通模型执行、显存管理与推理服务链路。",
+        sglitePointThree: "在消费级与数据中心级 NVIDIA GPU 上进行对比评测，性能接近主流 vLLM 与 SGLang。",
+        capstoneName: "大语言模型在嵌入式 GPU 上的高效部署",
+        capstoneScore: "毕设 84/100",
+        capstonePointZero: "在 NVIDIA Jetson Orin 嵌入式 GPU 设备上开展大语言模型部署。",
+        capstonePointOne: "利用模型量化技术，围绕自定义 CUDA 内核优化、GPU 显存管理与推理性能开展优化、实现和分析。",
+        honoursTitle: "学术荣誉",
+        degreeTitle: "一等荣誉学位（1st Class Honours）",
+        degreeCopy: "埃塞克斯大学计算机科学",
+        deansTitle: "院长卓越名单（Dean's List）",
+        deansCopy: "2024/25 学年学术奖",
+        skillsTitle: "技术能力",
+        progLangSubtitle: "[编程语言]",
+        langSubtitle: "[语言能力]",
+        toolsSubtitle: "[工具与平台]",
+        englishLabel: "英语",
+        englishScore: "IELTS 6.0",
+        toolsLabel: "工具 / 平台",
+        codingAgentLabel: "Coding Agent",
+        aiPracticeTitle: "AI 工程实践",
+        aiPractice: "使用 Coding Agent（例如 Codex、Claude Code），广泛用于日常运维、代码维护与工程化治理。",
+        piAgentsResearch: "当前学习与研究 Pi Agents，持续探索 Agent 系统与工具调用工作流。"
+      },
+      en: {
+        title: "Deng Shihao - Resume",
+        description: "Deng Shihao's resume, focused on LLM inference, GPU acceleration, and high-performance computing.",
+        skip: "Skip to resume",
+        languageAria: "Choose language",
+        savePdf: "Save as PDF",
+        themeToDark: "Switch to dark mode",
+        themeToLight: "Switch to light mode",
+        contactAria: "Contact details",
+        resumeLabel: "Resume",
+        name: "Deng Shihao",
+        strengthsTitle: "Strengths",
+        strengthsSummary: "Focused on the full-stack engineering of LLM inference systems, from low-level optimisation to serving deployment, keeping up with advances in cutting-edge model architectures and inference techniques. Maintains broad interest in diverse AI directions including agent systems, and also keeps an eye on web design and front-end development practices. Leverages coding agents (Claude Code, Codex) to optimise development workflows.",
+        educationTitle: "Education",
+        essexName: "University of Essex",
+        essexDegree: "Computer Science",
+        jufeName: "Jiangxi University of Finance and Economics",
+        jufeDegree: "Software Engineering",
+        projectsTitle: "Projects",
+        sgliteAcceptance: "Paper accepted at ICAC 2026",
+        sglitePointOnePrefix: "Built a ",
+        lightweight: "lightweight",
+        sglitePointOneSuffix: " LLM inference runtime from scratch with OpenAI-compatible serving, tensor parallelism, paged KV cache, chunked prefill, and overlap scheduling.",
+        sglitePointTwo: "Integrated FlashAttention, FlashInfer, and TensorRT-LLM backends across model execution, memory management, and the inference serving path.",
+        sglitePointThree: "Benchmarked on consumer and datacentre NVIDIA GPUs, achieving performance close to mainstream vLLM and SGLang implementations.",
+        capstoneName: "Efficient Deployment of Large Language Models on Embedded GPUs",
+        capstoneScore: "Capstone project mark: 84/100",
+        capstonePointZero: "Deployed large language models on an NVIDIA Jetson Orin embedded GPU device.",
+        capstonePointOne: "Applied model quantization techniques while implementing and analysing custom CUDA kernel optimisations, GPU memory management, and inference performance.",
+        honoursTitle: "Academic Recognition",
+        degreeTitle: "1st Class Honours",
+        degreeCopy: "BSc Computer Science, University of Essex",
+        deansTitle: "Dean's List for Excellence",
+        deansCopy: "Academic Prize, 2024/25",
+        skillsTitle: "Technical Skills",
+        progLangSubtitle: "[Programming Languages]",
+        langSubtitle: "[Languages]",
+        toolsSubtitle: "[Tools & Platforms]",
+        englishLabel: "English",
+        englishScore: "IELTS 6.0",
+        toolsLabel: "Tools / Platforms",
+        codingAgentLabel: "Coding Agent",
+        aiPracticeTitle: "AI Engineering Practice",
+        aiPractice: "Used coding agents (e.g. Codex and Claude Code) extensively for daily operations, code maintenance, and engineering governance.",
+        piAgentsResearch: "Currently studying and researching Pi Agents, with an ongoing focus on agent systems and tool-calling workflows."
+      }
+    };
+
+    const languageButtons = document.querySelectorAll("[data-language]");
+    const descriptionMeta = document.querySelector('meta[name="description"]');
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const themeButton = document.querySelector(".theme-toggle");
+    const themeSymbol = document.querySelector(".theme-symbol");
+
+    function applyTheme(theme, persist = true) {
+      const selected = theme === "dark" ? "dark" : "light";
+      const language = copy[document.documentElement.lang] ? document.documentElement.lang : "zh-CN";
+      const label = copy[language][selected === "dark" ? "themeToLight" : "themeToDark"];
+
+      document.documentElement.dataset.theme = selected;
+      themeButton.setAttribute("aria-pressed", String(selected === "dark"));
+      themeButton.setAttribute("aria-label", label);
+      themeButton.title = label;
+      themeSymbol.textContent = selected === "dark" ? "☀" : "☾";
+      themeColorMeta.setAttribute("content", selected === "dark" ? "#0c1015" : "#f2f3f5");
+
+      if (!persist) return;
+
+      try {
+        localStorage.setItem("resume-theme", selected);
+      } catch {
+        return;
+      }
+    }
+
+    function savedLanguage() {
+      try {
+        return localStorage.getItem("resume-language");
+      } catch {
+        return null;
+      }
+    }
+
+    function applyLanguage(language, persist = true) {
+      const selected = copy[language] ? language : "zh-CN";
+      const strings = copy[selected];
+
+      document.documentElement.lang = selected;
+      document.title = strings.title;
+      descriptionMeta.setAttribute("content", strings.description);
+
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        const key = element.dataset.i18n;
+        if (strings[key]) element.textContent = strings[key];
+      });
+
+      document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+        const key = element.dataset.i18nAriaLabel;
+        if (strings[key]) element.setAttribute("aria-label", strings[key]);
+      });
+
+      languageButtons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.language === selected));
+      });
+
+      applyTheme(document.documentElement.dataset.theme, false);
+
+      if (!persist) return;
+
+      try {
+        localStorage.setItem("resume-language", selected);
+      } catch {
+        return;
+      }
+    }
+
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.language));
+    });
+
+    themeButton.addEventListener("click", () => {
+      applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    applyLanguage(savedLanguage() || "zh-CN", false);
+  </script>
+</body>
+</html>
