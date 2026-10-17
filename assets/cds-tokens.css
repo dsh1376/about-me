@@ -1,0 +1,197 @@
+/*
+ * CDS (Claude Design System) tokens.
+ * Values come from the CDS Storybook at https://claude-storybook.bystanderss.chatgpt.site/
+ * (snapshot 2026-10-17, sha256 c4f1223b...). That Storybook says it extracted them from
+ * Claude.app. This file has not been checked against Claude.app itself.
+ *
+ * Dark mode follows the source: add class "dark" to <html>.
+ * Names marked "(skill name)" are labels added here; the source uses only the literal value.
+ */
+
+:root {
+  /* Brand: clay */
+  --cds-clay: #d97757;            /* thinking dots, primary buttons, brand icon */
+  --cds-clay-emphasized: #cc5a36; /* primary hover and pressed */
+  --cds-clay-light: #fbf3ef;      /* light selected-state fill */
+
+  /* Surfaces, lowest to highest */
+  --cds-surface-0: #f5f5f3; /* sidebar and borderless shell */
+  --cds-surface-1: #fcfcfb; /* main chat canvas */
+  --cds-surface-2: #ffffff; /* cards, panels, area around message bubbles */
+  --cds-surface-3: #ffffff; /* composer body, popovers */
+
+  /* Warm neutral grays */
+  --cds-gray-0: #ffffff;
+  --cds-gray-10: #fcfcfb;
+  --cds-gray-20: #f5f5f3;
+  --cds-gray-100: #dedcd6;
+  --cds-gray-300: #a4a19b;
+  --cds-gray-500: #6b6863;
+  --cds-gray-700: #373634;
+  --cds-gray-800: #20201e;
+  --cds-gray-850: #151515;
+  --cds-gray-900: #0b0b0a;
+
+  /* User message bubble fill (skill name) */
+  --cds-user-bubble: #f0f4f8;
+
+  /* Radius. The source states one scale factor, 16/17, applied to base radii. */
+  --cds-rem-scale: calc(16 / 17);                       /* about 0.941 */
+  --cds-radius-xs: calc(5px * var(--cds-rem-scale));    /* 4.7px: tags, checkboxes, small keys */
+  --cds-radius-sm: calc(6px * var(--cds-rem-scale));    /* 5.6px: small buttons, kbd badges */
+  --cds-radius-md: calc(8px * var(--cds-rem-scale));    /* 7.5px: standard buttons, menu items */
+  --cds-radius-lg: calc(10px * var(--cds-rem-scale));   /* 9.4px: accordion cards, popovers, attachments */
+  --cds-radius-xl: calc(14px * var(--cds-rem-scale));   /* 13.2px: mobile composer, modals */
+  --cds-radius-composer: 20px;                          /* desktop composer shell, never scaled */
+  --cds-radius-full: 999px;                             /* segmented pill, avatars, status badges */
+
+  /* Control heights */
+  --cds-height-xs: 24px;       /* 20px to 24px: inline actions, tag close */
+  --cds-height-sm: 28px;       /* 24px to 28px: dense toolbar buttons */
+  --cds-height-md: 32px;       /* default: send, standard buttons, tabs */
+  --cds-height-lg: 40px;       /* sign in, primary call to action */
+  --cds-height-titlebar: 48px; /* 46px to 48px: macOS frameless drag region */
+  --cds-height-segmented: 36px;
+
+  /* Shadows (light) */
+  --cds-shadow-composer: 0 0.25rem 1.25rem rgba(0,0,0,0.035), inset 0 0 0 1px rgba(0,0,0,0.08);
+  --cds-shadow-composer-focus: 0 0.25rem 1.25rem rgba(0,0,0,0.075), inset 0 0 0 1px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.16);
+  --cds-shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05), 0 2px 8px 0 rgba(0,0,0,0.04);    /* badges, tiny hover buttons */
+  --cds-shadow-md: 0 2px 4px 0 rgba(0,0,0,0.06), 0 6px 16px 0 rgba(0,0,0,0.07);   /* cards, thinking block */
+  --cds-shadow-popover: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08);  /* menus, slash command panel */
+  --cds-shadow-segmented-thumb: inset 0 0 0 1px rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.08);
+
+  /* Type */
+  --cds-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --cds-font-serif: "Newsreader", ui-serif, Georgia, serif;
+  --cds-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --cds-weight-medium: 500;   /* dark mode: 460 */
+  --cds-weight-semibold: 600; /* dark mode: 560 */
+  --cds-weight-segmented: 470;
+
+  /* Motion: durations */
+  --cds-dur-fast: 60ms;   /* micro feedback, icon color, button micro-scale */
+  --cds-dur-snap: 120ms;  /* snapping, segmented thumb, tab switch */
+  --cds-dur-base: 200ms;  /* standard transitions, menus, grid collapse */
+  --cds-dur-sheet: 300ms; /* sidebar slide, artifact panel */
+  --cds-dur-slow: 450ms;  /* large color transitions, ambient glow */
+
+  /* Motion: named easings */
+  --cds-ease-out: cubic-bezier(.165, .84, .44, 1);      /* smooth decel, about easeOutQuart */
+  --cds-ease-snap: cubic-bezier(.32, .72, 0, 1);        /* fast start, decisive settle */
+  --cds-ease-overshoot: cubic-bezier(.34, 1.3, .64, 1); /* light overshoot */
+
+  /* Motion: curves used by components (skill names) */
+  --cds-ease-expand: cubic-bezier(.19, 1, .22, 1);      /* thinking accordion grid rows */
+  --cds-ease-grapheme: cubic-bezier(.215, .61, .355, 1);/* streaming grapheme reveal */
+  --cds-ease-message: cubic-bezier(.34, 1.56, .64, 1);  /* assistant message fade-up */
+  --cds-ease-dots: cubic-bezier(.4, 0, .2, 1);          /* thinking quiet dots */
+  --cds-ease-block: cubic-bezier(.22, 1, .36, 1);       /* first segment of timeline-block-enter */
+}
+
+.dark {
+  --cds-surface-0: #0b0b0a;
+  --cds-surface-1: #151515;
+  --cds-surface-2: #1a1a19;
+  --cds-surface-3: #20201e;
+
+  --cds-user-bubble: rgba(255,255,255,0.1);
+
+  /* Irradiation compensation: light text on dark reads 10% to 15% heavier. Needs a variable font. */
+  --cds-weight-medium: 460;
+  --cds-weight-semibold: 560;
+
+  --cds-shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --cds-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --cds-shadow-popover: 0 8px 24px rgba(0,0,0,0.5);
+  /* The source gives no dark composer shadow; it reuses the light value on #20201e. */
+}
+
+/* Keyframes, as defined in the source */
+@keyframes _grapheme-reveal_1plog_1 {
+  0% { opacity: 0; filter: blur(6px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+@keyframes timeline-quiet-dot {
+  0%, 8%   { opacity: 0; transform: translateY(2px); }
+  22%      { opacity: 1; transform: translateY(-2.5px); }
+  36%, 70% { opacity: 1; transform: translateY(0); }
+  90%, 100%{ opacity: 0; transform: translateY(0); }
+}
+
+@keyframes timeline-block-enter {
+  0% {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(5px) scale(0.9);
+    animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+  }
+  30% {
+    opacity: 0;
+    filter: blur(4px);
+    transform: none;
+    animation-timing-function: ease-out;
+  }
+  100% { opacity: 1; filter: none; transform: none; }
+}
+
+@keyframes message-fade-up {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes code-user-bubble-enter {
+  0%   { opacity: 0; transform: scale(0.92) translateY(6px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes byline-sent-bump {
+  50% { transform: scale(1.05); }
+}
+
+@keyframes cds-skeleton-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes file-thumbnail-grow-in {
+  0% { opacity: 0; max-width: 0; transform: scale(0.8); }
+  100% { opacity: 1; max-width: 8rem; transform: scale(1); }
+}
+
+@keyframes file-thumbnail-upload-pulse {
+  50% { opacity: 0.45; }
+}
+
+@keyframes saved-check-decay {
+  to { opacity: 0; }
+}
+
+@keyframes click-ring {
+  0%   { opacity: 0.95; transform: scale(0.22); }
+  100% { opacity: 0;    transform: scale(1); }
+}
+
+/* Helpers, as defined in the source */
+.align-neg-125 { vertical-align: -0.125em; } /* inline icon at 14px to 16px text */
+.align-neg-075 { vertical-align: -0.075em; } /* inline icon at 11px to 12px caption text */
+.align-neg-1px { vertical-align: -1px; }
+.align-neg-2px { vertical-align: -2px; }
+.text-balance-native { text-wrap: balance; } /* headings */
+.text-pretty-native { text-wrap: pretty; }   /* body paragraphs */
+.overflow-wrap-anywhere { overflow-wrap: anywhere; word-break: normal; } /* long ids, hashes, model names */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.25); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
+
+/* Not in the source: the Storybook has no reduced-motion handling. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
