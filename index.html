@@ -334,21 +334,9 @@
     const revealSegmenter = typeof Intl.Segmenter === "function"
       ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
       : null;
-    const revealObserver = typeof IntersectionObserver === "function"
-      ? new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          observer.unobserve(entry.target);
-          revealBlock(entry.target);
-        });
-      })
-      : null;
 
     function startReveals() {
-      document.querySelectorAll(".reveal-pending").forEach((block) => {
-        if (revealObserver) revealObserver.observe(block);
-        else revealBlock(block);
-      });
+      document.querySelectorAll(".reveal-pending").forEach(revealBlock);
     }
 
     function finishReveal(block) {
@@ -414,7 +402,6 @@
 
     function revealText() {
       const resume = document.querySelector(".resume");
-      revealObserver?.disconnect();
       resume.querySelectorAll(".reveal-block").forEach(finishReveal);
 
       if (reducedMotion.matches || !revealSegmenter) return;
@@ -428,7 +415,6 @@
 
     reducedMotion.addEventListener("change", revealText);
     window.addEventListener("beforeprint", () => {
-      revealObserver?.disconnect();
       document.querySelectorAll(".reveal-block").forEach(finishReveal);
     });
 
