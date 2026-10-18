@@ -23,6 +23,12 @@
 <body>
   <a class="skip-link" href="#resume" data-i18n="skip">跳至简历正文</a>
 
+  <div class="cursor-scene" aria-hidden="true" inert>
+    <span class="cursor-actor"></span>
+    <span class="cursor-actor"></span>
+    <span class="cursor-actor"></span>
+  </div>
+
   <div class="page-actions">
     <div class="page-loading" role="status" aria-live="polite">
       <span data-i18n="loading">加载中</span>
@@ -533,6 +539,112 @@
       applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
     });
 
+    function startCursorChase() {
+      const scene = document.querySelector(".cursor-scene");
+      const printing = matchMedia("print");
+      let width = document.documentElement.clientWidth;
+      let height = window.innerHeight;
+      const cursors = Array.from(scene.children, (element, index) => ({
+        element,
+        x: width * (0.4 + index * 0.08),
+        y: height * (0.42 + index * 0.08),
+        vx: 0,
+        vy: 0,
+        heading: 0
+      }));
+      let frame = null;
+      let previousTime = null;
+      let elapsed = 0;
+
+      function resize() {
+        const nextWidth = document.documentElement.clientWidth;
+        const nextHeight = window.innerHeight;
+        cursors.forEach((cursor) => {
+          cursor.x = Math.max(32, Math.min(nextWidth - 32, cursor.x * nextWidth / width));
+          cursor.y = Math.max(32, Math.min(nextHeight - 32, cursor.y * nextHeight / height));
+        });
+        width = nextWidth;
+        height = nextHeight;
+      }
+
+      function animate(now) {
+        const firstFrame = previousTime === null;
+        const delta = firstFrame ? 1 / 60 : Math.min((now - previousTime) / 1000, 0.05);
+        previousTime = now;
+        elapsed += delta;
+        const leader = Math.floor(elapsed / 8) % cursors.length;
+        const positions = cursors.map(({ x, y, vx, vy }) => ({ x, y, vx, vy }));
+        const speedLimit = Math.min(150, width * 0.28);
+        const steering = 1 - Math.exp(-6 * delta);
+
+        cursors.forEach((cursor, index) => {
+          const target = positions[(index + cursors.length - 1) % cursors.length];
+          const weave = elapsed * 2 + index * Math.PI * 2 / cursors.length;
+          const targetX = index === leader
+            ? width * (0.5 + 0.27 * Math.sin(elapsed * 0.28) + 0.08 * Math.sin(elapsed * 0.71))
+            : target.x - target.vx * 0.28 + Math.cos(weave) * 26;
+          const targetY = index === leader
+            ? height * (0.5 + 0.25 * Math.sin(elapsed * 0.33 + 0.8) + 0.07 * Math.cos(elapsed * 0.61))
+            : target.y - target.vy * 0.28 + Math.sin(weave) * 26;
+          const dx = targetX - cursor.x;
+          const dy = targetY - cursor.y;
+          const distance = Math.max(1, Math.hypot(dx, dy));
+          const speed = Math.min(speedLimit, distance * 2.6);
+          let vx = dx / distance * speed;
+          let vy = dy / distance * speed;
+
+          // Separation keeps the pursuers from collapsing into one overlapping cursor.
+          positions.forEach((other, otherIndex) => {
+            if (otherIndex === index) return;
+            const apartX = cursor.x - other.x;
+            const apartY = cursor.y - other.y;
+            const apart = Math.hypot(apartX, apartY);
+            if (apart > 0 && apart < 84) {
+              const repulsion = (84 - apart) * 12 / apart;
+              vx += apartX * repulsion;
+              vy += apartY * repulsion;
+            }
+          });
+
+          const limit = Math.max(1, Math.hypot(vx, vy) / speedLimit);
+          cursor.vx += (vx / limit - cursor.vx) * steering;
+          cursor.vy += (vy / limit - cursor.vy) * steering;
+          cursor.x = Math.max(32, Math.min(width - 32, cursor.x + cursor.vx * delta));
+          cursor.y = Math.max(32, Math.min(height - 32, cursor.y + cursor.vy * delta));
+
+          if (Math.hypot(cursor.vx, cursor.vy) > 3) {
+            // The SVG points northwest, so add 135 degrees to face the velocity.
+            const heading = Math.atan2(cursor.vy, cursor.vx) + Math.PI * 0.75;
+            // Take the shortest turn when the heading crosses the angle boundary.
+            const turn = Math.atan2(Math.sin(heading - cursor.heading), Math.cos(heading - cursor.heading));
+            cursor.heading += turn * (1 - Math.exp(-12 * delta));
+          }
+
+          cursor.element.style.transform = `translate(${cursor.x - 3}px, ${cursor.y - 3}px)`;
+          cursor.element.style.setProperty("--cursor-heading", `${cursor.heading}rad`);
+        });
+
+        if (firstFrame) scene.classList.add("is-playing");
+        frame = requestAnimationFrame(animate);
+      }
+
+      function syncPlayback() {
+        if (frame !== null) cancelAnimationFrame(frame);
+        frame = null;
+        previousTime = null;
+        scene.classList.remove("is-playing");
+        if (reducedMotion.matches || document.hidden || printing.matches) return;
+        resize();
+        frame = requestAnimationFrame(animate);
+      }
+
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", syncPlayback);
+      reducedMotion.addEventListener("change", syncPlayback);
+      printing.addEventListener("change", syncPlayback);
+      syncPlayback();
+    }
+
     const resume = document.querySelector(".resume");
     resume.setAttribute("aria-busy", "true");
     applyLanguage(savedLanguage() || "zh-CN", false);
@@ -545,6 +657,7 @@
       document.documentElement.classList.remove("is-loading");
       resume.setAttribute("aria-busy", "false");
       startReveals();
+      startCursorChase();
     });
   </script>
 </body>

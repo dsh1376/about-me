@@ -23,6 +23,7 @@
   --muted: var(--cds-gray-500);
   --line: color-mix(in srgb, var(--cds-gray-100) 65%, transparent);
   --accent-ink: color-mix(in srgb, var(--cds-clay-emphasized) 76%, var(--cds-gray-900));
+  --page-cursor: url("cursor.svg") 3 3;
   font-family: var(--cds-font-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
   font-synthesis: none;
 }
@@ -44,6 +45,7 @@ html.dark {
 html {
   background: var(--canvas);
   color: var(--ink);
+  cursor: var(--page-cursor), auto;
   scroll-behavior: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--cds-gray-300) transparent;
@@ -57,6 +59,36 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.cursor-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.cursor-scene.is-playing {
+  visibility: visible;
+}
+
+.cursor-actor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.cursor-actor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("cursor.svg") center / contain no-repeat;
+  transform-origin: 3px 3px;
+  rotate: var(--cursor-heading, 0rad);
 }
 
 ::selection {
@@ -87,6 +119,10 @@ p, li, dd {
 }
 
 @media print, (prefers-reduced-motion: reduce) {
+  .cursor-scene {
+    display: none;
+  }
+
   .reveal-pending {
     opacity: 1 !important;
   }
@@ -113,6 +149,7 @@ a:hover {
 }
 
 button, a {
+  cursor: var(--page-cursor), pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -122,7 +159,6 @@ button:focus-visible, a:focus-visible {
 }
 
 button {
-  cursor: pointer;
   font: inherit;
 }
 
