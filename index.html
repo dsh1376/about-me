@@ -6,6 +6,7 @@
   <meta name="description" content="邓世豪的个人简历，专注于大语言模型推理、GPU 加速与高性能计算。">
   <meta name="theme-color" content="#f5f5f3">
   <title>邓世豪 - 简历</title>
+  <link rel="icon" type="image/svg+xml" href="assets/cursor.svg" sizes="any">
   <script>
     document.documentElement.classList.add("is-loading");
     try {
@@ -23,11 +24,7 @@
 <body>
   <a class="skip-link" href="#resume" data-i18n="skip">跳至简历正文</a>
 
-  <div class="cursor-scene" aria-hidden="true" inert>
-    <span class="cursor-actor"></span>
-    <span class="cursor-actor"></span>
-    <span class="cursor-actor"></span>
-  </div>
+  <canvas class="ascii-ripples" aria-hidden="true" inert></canvas>
 
   <div class="page-actions">
     <div class="page-loading" role="status" aria-live="polite">
@@ -539,110 +536,255 @@
       applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
     });
 
-    function startCursorChase() {
-      const scene = document.querySelector(".cursor-scene");
+    function startFaviconRotation() {
+      const icon = document.querySelector('link[rel="icon"]');
+      const original = {
+        href: icon.getAttribute("href"),
+        type: icon.type,
+        sizes: icon.getAttribute("sizes")
+      };
+      const image = new Image();
+
+      image.addEventListener("load", () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+        const context = canvas.getContext("2d");
+        const frames = Array.from({ length: 64 }, (_, index) => {
+          context.clearRect(0, 0, 32, 32);
+          context.save();
+          context.translate(16, 16);
+          context.rotate(index / 64 * Math.PI * 2);
+          // Padding keeps the outline inside the canvas throughout the rotation.
+          context.drawImage(image, -14, -14, 28, 28);
+          context.restore();
+          return canvas.toDataURL("image/png");
+        });
+        let timer = null;
+
+        function syncRotation() {
+          if (timer !== null) clearInterval(timer);
+          timer = null;
+          if (reducedMotion.matches) {
+            icon.href = original.href;
+            icon.type = original.type;
+            icon.setAttribute("sizes", original.sizes);
+            return;
+          }
+
+          let index = 0;
+          icon.type = "image/png";
+          icon.setAttribute("sizes", "32x32");
+          icon.href = frames[index];
+          timer = setInterval(() => {
+            index = (index + 1) % frames.length;
+            icon.href = frames[index];
+          }, 125);
+        }
+
+        reducedMotion.addEventListener("change", syncRotation);
+        syncRotation();
+      }, { once: true });
+
+      image.src = original.href;
+    }
+
+    function startAsciiRipples() {
+      const scene = document.querySelector(".ascii-ripples");
+      const context = scene.getContext("2d");
+      if (!context) return;
       const printing = matchMedia("print");
-      let width = document.documentElement.clientWidth;
-      let height = window.innerHeight;
-      const cursors = Array.from(scene.children, (element, index) => ({
-        element,
-        x: width * (0.4 + index * 0.08),
-        y: height * (0.42 + index * 0.08),
-        vx: 0,
-        vy: 0,
-        heading: 0
-      }));
+      const cardCovers = matchMedia("(min-width: 721px)");
+      const resume = document.querySelector(".resume");
+      const glyphs = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      const levels = 6;
+      const rippleLifetime = 4000;
+      const rippleSpeed = 0.32;
+      const glowFade = 900;
+      // Drifting wave sources whose interference shapes the glyph field when nobody clicks.
+      const sources = [
+        { ax: 0.35, ay: 0.3, fx: 0.031, fy: 0.047, phase: 0 },
+        { ax: 0.4, ay: 0.35, fx: 0.043, fy: 0.029, phase: 2.1 },
+        { ax: 0.3, ay: 0.4, fx: 0.037, fy: 0.053, phase: 4.2 }
+      ];
+      let width = 0;
+      let height = 0;
+      let scale = 1;
+      let fontSize;
+      let cellWidth;
+      let cellHeight;
+      let columns;
+      let rows;
+      let characters;
+      let sparkle;
+      let heat;
+      let previous;
+      let previousDraw = 0;
+      let atlas;
+      let ripples = [];
       let frame = null;
-      let previousTime = null;
-      let elapsed = 0;
+      let lastDraw = -Infinity;
+      const buckets = Array.from({ length: levels * 2 }, () => []);
+
+      function buildAtlas() {
+        const style = getComputedStyle(scene);
+        const colors = [style.getPropertyValue("--ripple-ink"), style.getPropertyValue("--ripple-glow")];
+        atlas = document.createElement("canvas");
+        atlas.width = Math.ceil(cellWidth * scale) * glyphs.length;
+        atlas.height = Math.ceil(cellHeight * scale) * colors.length;
+        const atlasContext = atlas.getContext("2d");
+        atlasContext.scale(scale, scale);
+        atlasContext.font = `${fontSize}px ${style.fontFamily}`;
+        atlasContext.textAlign = "center";
+        atlasContext.textBaseline = "middle";
+        const slotWidth = Math.ceil(cellWidth * scale) / scale;
+        const slotHeight = Math.ceil(cellHeight * scale) / scale;
+        colors.forEach((color, row) => {
+          atlasContext.fillStyle = color.trim();
+          for (let index = 0; index < glyphs.length; index++) {
+            atlasContext.fillText(glyphs[index], (index + 0.5) * slotWidth, (row + 0.5) * slotHeight);
+          }
+        });
+      }
 
       function resize() {
-        const nextWidth = document.documentElement.clientWidth;
-        const nextHeight = window.innerHeight;
-        cursors.forEach((cursor) => {
-          cursor.x = Math.max(32, Math.min(nextWidth - 32, cursor.x * nextWidth / width));
-          cursor.y = Math.max(32, Math.min(nextHeight - 32, cursor.y * nextHeight / height));
+        width = document.documentElement.clientWidth;
+        height = window.innerHeight;
+        scale = Math.min(window.devicePixelRatio || 1, 2);
+        fontSize = width < 721 ? 10 : 11;
+        scene.width = Math.round(width * scale);
+        scene.height = Math.round(height * scale);
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        context.font = `${fontSize}px ${getComputedStyle(scene).fontFamily}`;
+        cellWidth = Math.ceil(context.measureText("M").width);
+        cellHeight = Math.ceil(fontSize * 1.35);
+        columns = Math.ceil(width / cellWidth);
+        rows = Math.ceil(height / cellHeight);
+        characters = Uint8Array.from({ length: columns * rows }, () => Math.floor(Math.random() * glyphs.length));
+        sparkle = Float32Array.from({ length: columns * rows }, Math.random);
+        heat = new Float32Array(columns * rows);
+        // NaN means "no earlier sample", so the first frame does not flash every glyph.
+        previous = new Float32Array(columns * rows).fill(NaN);
+        buildAtlas();
+        lastDraw = -Infinity;
+        previousDraw = performance.now();
+      }
+
+      function field(x, y, time, now, waves) {
+        // Low-frequency flow gives the large drifting blobs; the waves add ripple rings on top.
+        const flow = Math.sin(x * 0.0042 + time * 0.21 + 1.7 * Math.sin(y * 0.0031 - time * 0.17))
+          * Math.cos(y * 0.0052 - time * 0.15 + 1.3 * Math.sin(x * 0.0026 + time * 0.11));
+        let ambient = 0;
+        for (const wave of waves) {
+          ambient += Math.sin(Math.hypot(x - wave.x, y - wave.y) * 0.017 - time * 1.1 + wave.phase);
+        }
+        let glow = 0;
+        for (const ripple of ripples) {
+          const age = now - ripple.started;
+          const band = (Math.hypot(x - ripple.x, y - ripple.y) - age * rippleSpeed) / 46;
+          glow += Math.exp(-band * band) * (1 - age / rippleLifetime);
+        }
+        return { value: 0.55 * flow + 0.45 * ambient / waves.length + glow * 0.9, glow };
+      }
+
+      function draw(now) {
+        const time = now / 1000;
+        const waves = sources.map(({ ax, ay, fx, fy, phase }) => ({
+          x: width * (0.5 + ax * Math.sin(time * fx * Math.PI * 2 + phase)),
+          y: height * (0.5 + ay * Math.cos(time * fy * Math.PI * 2 + phase * 1.3)),
+          phase
+        }));
+        // On wide screens the opaque card hides its own area, so skip those cells.
+        const card = cardCovers.matches ? resume.getBoundingClientRect() : null;
+        buckets.forEach((bucket) => { bucket.length = 0; });
+        // Blue flashes fade back to gray at the same speed whatever the frame rate.
+        const decay = Math.exp(-Math.min(now - previousDraw, 200) / glowFade);
+        previousDraw = now;
+
+        for (let row = 0; row < rows; row++) {
+          const y = (row + 0.5) * cellHeight;
+          const rowCovered = card && y > card.top && y < card.bottom;
+          for (let column = 0; column < columns; column++) {
+            const x = (column + 0.5) * cellWidth;
+            if (rowCovered && x > card.left && x < card.right) continue;
+            const { value, glow } = field(x, y, time, now, waves);
+            const cell = row * columns + column;
+            heat[cell] *= decay;
+            // A glyph flashes blue only when the advancing front first reaches it, then dissipates.
+            // The fixed per-cell threshold scatters the flashes instead of lighting solid runs.
+            if (previous[cell] < 0.2 && value >= 0.2 && sparkle[cell] < 0.45) heat[cell] = 1;
+            if (glow > 0.5 && sparkle[cell] < glow * 0.7) heat[cell] = Math.max(heat[cell], Math.min(1, glow));
+            previous[cell] = value;
+            const isGlow = heat[cell] > 0.06;
+            if (value < 0.12 && !isGlow) continue;
+            const body = Math.min(1, Math.max(0, value - 0.12) / 0.45);
+            const level = Math.min(levels - 1, Math.floor((isGlow ? heat[cell] : body) * levels));
+            if (Math.random() < (isGlow ? 0.12 : 0.004)) {
+              characters[cell] = Math.floor(Math.random() * glyphs.length);
+            }
+            buckets[(isGlow ? levels : 0) + level].push(cell);
+          }
+        }
+
+        context.clearRect(0, 0, width, height);
+        const slotWidth = Math.ceil(cellWidth * scale);
+        const slotHeight = Math.ceil(cellHeight * scale);
+        buckets.forEach((bucket, index) => {
+          if (!bucket.length) return;
+          const isGlow = index >= levels;
+          const level = index % levels;
+          context.globalAlpha = isGlow ? 0.25 + 0.6 * (level + 1) / levels : 0.1 + 0.35 * (level + 1) / levels;
+          const sourceY = isGlow ? slotHeight : 0;
+          for (const cell of bucket) {
+            const column = cell % columns;
+            const row = (cell - column) / columns;
+            context.drawImage(
+              atlas,
+              characters[cell] * slotWidth, sourceY, slotWidth, slotHeight,
+              column * cellWidth, row * cellHeight, slotWidth / scale, slotHeight / scale
+            );
+          }
         });
-        width = nextWidth;
-        height = nextHeight;
+        context.globalAlpha = 1;
       }
 
       function animate(now) {
-        const firstFrame = previousTime === null;
-        const delta = firstFrame ? 1 / 60 : Math.min((now - previousTime) / 1000, 0.05);
-        previousTime = now;
-        elapsed += delta;
-        const leader = Math.floor(elapsed / 8) % cursors.length;
-        const positions = cursors.map(({ x, y, vx, vy }) => ({ x, y, vx, vy }));
-        const speedLimit = Math.min(150, width * 0.28);
-        const steering = 1 - Math.exp(-6 * delta);
-
-        cursors.forEach((cursor, index) => {
-          const target = positions[(index + cursors.length - 1) % cursors.length];
-          const weave = elapsed * 2 + index * Math.PI * 2 / cursors.length;
-          const targetX = index === leader
-            ? width * (0.5 + 0.27 * Math.sin(elapsed * 0.28) + 0.08 * Math.sin(elapsed * 0.71))
-            : target.x - target.vx * 0.28 + Math.cos(weave) * 26;
-          const targetY = index === leader
-            ? height * (0.5 + 0.25 * Math.sin(elapsed * 0.33 + 0.8) + 0.07 * Math.cos(elapsed * 0.61))
-            : target.y - target.vy * 0.28 + Math.sin(weave) * 26;
-          const dx = targetX - cursor.x;
-          const dy = targetY - cursor.y;
-          const distance = Math.max(1, Math.hypot(dx, dy));
-          const speed = Math.min(speedLimit, distance * 2.6);
-          let vx = dx / distance * speed;
-          let vy = dy / distance * speed;
-
-          // Separation keeps the pursuers from collapsing into one overlapping cursor.
-          positions.forEach((other, otherIndex) => {
-            if (otherIndex === index) return;
-            const apartX = cursor.x - other.x;
-            const apartY = cursor.y - other.y;
-            const apart = Math.hypot(apartX, apartY);
-            if (apart > 0 && apart < 84) {
-              const repulsion = (84 - apart) * 12 / apart;
-              vx += apartX * repulsion;
-              vy += apartY * repulsion;
-            }
-          });
-
-          const limit = Math.max(1, Math.hypot(vx, vy) / speedLimit);
-          cursor.vx += (vx / limit - cursor.vx) * steering;
-          cursor.vy += (vy / limit - cursor.vy) * steering;
-          cursor.x = Math.max(32, Math.min(width - 32, cursor.x + cursor.vx * delta));
-          cursor.y = Math.max(32, Math.min(height - 32, cursor.y + cursor.vy * delta));
-
-          if (Math.hypot(cursor.vx, cursor.vy) > 3) {
-            // The SVG points northwest, so add 135 degrees to face the velocity.
-            const heading = Math.atan2(cursor.vy, cursor.vx) + Math.PI * 0.75;
-            // Take the shortest turn when the heading crosses the angle boundary.
-            const turn = Math.atan2(Math.sin(heading - cursor.heading), Math.cos(heading - cursor.heading));
-            cursor.heading += turn * (1 - Math.exp(-12 * delta));
-          }
-
-          cursor.element.style.transform = `translate(${cursor.x - 3}px, ${cursor.y - 3}px)`;
-          cursor.element.style.setProperty("--cursor-heading", `${cursor.heading}rad`);
-        });
-
-        if (firstFrame) scene.classList.add("is-playing");
         frame = requestAnimationFrame(animate);
+        if (now - lastDraw < 1000 / 30) return;
+        lastDraw = now;
+        ripples = ripples.filter((ripple) => now - ripple.started < rippleLifetime);
+        draw(now);
       }
 
-      function syncPlayback() {
-        if (frame !== null) cancelAnimationFrame(frame);
-        frame = null;
-        previousTime = null;
-        scene.classList.remove("is-playing");
-        if (reducedMotion.matches || document.hidden || printing.matches) return;
-        resize();
-        frame = requestAnimationFrame(animate);
+      function sync() {
+        const running = !reducedMotion.matches && !printing.matches && !document.hidden;
+        if (running && frame === null) {
+          lastDraw = -Infinity;
+          frame = requestAnimationFrame(animate);
+        } else if (!running && frame !== null) {
+          cancelAnimationFrame(frame);
+          frame = null;
+          ripples = [];
+          context.clearRect(0, 0, width, height);
+        }
       }
 
+      window.addEventListener("click", (event) => {
+        if (event.button !== 0 || frame === null) return;
+        if (event.target.closest("a, button")) return;
+        ripples.push({ x: event.clientX, y: event.clientY, started: performance.now() });
+        // Bound the per-cell work during rapid clicks.
+        if (ripples.length > 6) ripples.shift();
+      }, { passive: true });
       window.addEventListener("resize", resize);
-      document.addEventListener("visibilitychange", syncPlayback);
-      reducedMotion.addEventListener("change", syncPlayback);
-      printing.addEventListener("change", syncPlayback);
-      syncPlayback();
+      // Theme switches change the glyph colors, so the atlas must be redrawn.
+      new MutationObserver(buildAtlas).observe(document.documentElement, { attributeFilter: ["class"] });
+      document.fonts.ready.then(resize);
+      document.addEventListener("visibilitychange", sync);
+      reducedMotion.addEventListener("change", sync);
+      printing.addEventListener("change", sync);
+      resize();
+      sync();
     }
 
     const resume = document.querySelector(".resume");
@@ -657,7 +799,8 @@
       document.documentElement.classList.remove("is-loading");
       resume.setAttribute("aria-busy", "false");
       startReveals();
-      startCursorChase();
+      startFaviconRotation();
+      startAsciiRipples();
     });
   </script>
 </body>

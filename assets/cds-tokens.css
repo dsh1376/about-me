@@ -62,9 +62,9 @@
   --cds-shadow-segmented-thumb: inset 0 0 0 1px rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.08);
 
   /* Type */
-  --cds-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --cds-font-sans: "Geist Sans", system-ui, -apple-system, sans-serif;
   --cds-font-serif: "Newsreader", ui-serif, Georgia, serif;
-  --cds-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --cds-font-mono: monospace;
   --cds-weight-medium: 500;   /* dark mode: 460 */
   --cds-weight-semibold: 600; /* dark mode: 560 */
   --cds-weight-segmented: 470;

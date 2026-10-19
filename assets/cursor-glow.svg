@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="-12 -12 64 64">
+  <defs>
+    <filter id="accent-glow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#d97757" flood-opacity="0.95"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#d97757" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <g fill="#0b0b0a" stroke-linejoin="round" paint-order="stroke fill" filter="url(#accent-glow)">
+    <path stroke="#fcfcfb" stroke-width="7.2" d="M9.3 6.2C7.3 5.4 5.4 6.8 6.2 9.3L13.9 33.7C14.6 36 17 35.9 18 33.6L22.3 23.4L32.3 18.7C34.5 17.7 34.4 15.2 32.2 14.4Z"/>
+    <path stroke="#dedcd6" stroke-width="3.6" d="M9.3 6.2C7.3 5.4 5.4 6.8 6.2 9.3L13.9 33.7C14.6 36 17 35.9 18 33.6L22.3 23.4L32.3 18.7C34.5 17.7 34.4 15.2 32.2 14.4Z"/>
+  </g>
+</svg>

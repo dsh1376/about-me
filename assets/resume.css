@@ -1,9 +1,18 @@
 @font-face {
-  font-family: Inter;
+  font-family: "TsangerJinKai02-W04";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/TsangerJinKai02-W04.woff") format("woff");
+  unicode-range: U+2E80-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-323AF;
+}
+
+@font-face {
+  font-family: "Geist Sans";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("fonts/inter-variable.woff2") format("woff2");
+  src: url("fonts/geist-sans-variable.woff2") format("woff2");
 }
 
 @font-face {
@@ -16,6 +25,7 @@
 
 :root {
   color-scheme: light;
+  --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
@@ -52,6 +62,7 @@ html {
 }
 
 body {
+  isolation: isolate;
   margin: 0;
   min-width: 320px;
   background: var(--canvas);
@@ -61,34 +72,29 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-.cursor-scene {
+.ascii-ripples {
   position: fixed;
   inset: 0;
-  z-index: 3;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   overflow: hidden;
+  --ripple-ink: var(--cds-gray-500);
+  --ripple-glow: #2563eb;
+  font-family: var(--cds-font-mono);
   pointer-events: none;
-  visibility: hidden;
+  user-select: none;
 }
 
-.cursor-scene.is-playing {
-  visibility: visible;
+html.dark .ascii-ripples {
+  --ripple-ink: var(--cds-gray-300);
+  --ripple-glow: #93c5fd;
 }
 
-.cursor-actor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-}
-
-.cursor-actor::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("cursor.svg") center / contain no-repeat;
-  transform-origin: 3px 3px;
-  rotate: var(--cursor-heading, 0rad);
+.page-actions, .resume {
+  position: relative;
+  z-index: 1;
 }
 
 ::selection {
@@ -119,7 +125,7 @@ p, li, dd {
 }
 
 @media print, (prefers-reduced-motion: reduce) {
-  .cursor-scene {
+  .ascii-ripples {
     display: none;
   }
 
@@ -307,15 +313,28 @@ button {
 }
 
 .icon-button {
-  color: var(--cds-gray-900);
+  color: var(--cds-gray-10);
 }
 
 .icon-button .button-face {
-  background: var(--cds-clay);
+  background: var(--cds-gray-800);
 }
 
 .icon-button:hover .button-face {
-  background: var(--cds-clay-emphasized);
+  background: var(--cds-gray-700);
+}
+
+/* Invert in dark mode so the face stays visible on the near-black canvas. */
+html.dark .icon-button {
+  color: var(--cds-gray-800);
+}
+
+html.dark .icon-button .button-face {
+  background: var(--cds-gray-20);
+}
+
+html.dark .icon-button:hover .button-face {
+  background: var(--cds-gray-100);
 }
 
 .theme-toggle:hover {
@@ -644,6 +663,11 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
     background: var(--paper);
   }
 
+  /* The card is transparent here, so the field sits behind body text. */
+  .ascii-ripples {
+    opacity: 0.4;
+  }
+
   .page-actions {
     width: 100%;
     margin: 0;
@@ -655,6 +679,7 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
     margin: 0;
     padding: 28px 24px 40px;
     border-radius: 0;
+    background: transparent;
     box-shadow: none;
   }
 
