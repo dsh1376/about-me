@@ -81,7 +81,7 @@ body {
   margin: 0;
   overflow: hidden;
   --ripple-ink: var(--cds-gray-500);
-  --ripple-glow: #2563eb;
+  --ripple-glow: #26619c;
   font-family: var(--cds-font-mono);
   pointer-events: none;
   user-select: none;
@@ -89,7 +89,7 @@ body {
 
 html.dark .ascii-ripples {
   --ripple-ink: var(--cds-gray-300);
-  --ripple-glow: #93c5fd;
+  --ripple-glow: #26619c;
 }
 
 .page-actions, .resume {
