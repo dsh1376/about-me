@@ -421,6 +421,8 @@
       document.querySelectorAll(".reveal-block").forEach(finishReveal);
     });
 
+    // Press depth stays at 0.96; deeper presses read as exaggerated.
+    const buttonPressScale = 0.96;
     // Sample the CDS spring once; the browser animates transforms without a JavaScript frame loop.
     const buttonSpring = Array.from({ length: 28 }, (_, index) => {
       const elapsed = index / 27 * 0.45;
@@ -428,7 +430,7 @@
       const frequency = Math.sqrt(600 - decay ** 2);
       const displacement = Math.exp(-decay * elapsed)
         * (Math.cos(frequency * elapsed) + decay / frequency * Math.sin(frequency * elapsed));
-      return { transform: `scale(${index === 27 ? 1 : 1 - 0.12 * displacement})` };
+      return { transform: `scale(${index === 27 ? 1 : 1 - (1 - buttonPressScale) * displacement})` };
     });
 
     document.querySelectorAll(".page-actions button").forEach((button) => {
@@ -448,7 +450,7 @@
         spring?.cancel();
         spring = null;
         activeInput = input;
-        face.style.transform = "scale(0.88)";
+        face.style.transform = `scale(${buttonPressScale})`;
       }
 
       function release() {

@@ -26,6 +26,7 @@
 :root {
   color-scheme: light;
   --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
+  --cds-font-mono: "JetBrains Mono", ui-monospace, monospace;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
@@ -69,6 +70,7 @@ body {
   font-size: 15px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
@@ -237,6 +239,10 @@ button {
     transform: none !important;
   }
 
+  .theme-symbol svg {
+    transition: none;
+  }
+
   .loading-dot {
     animation: none !important;
     opacity: 1;
@@ -309,7 +315,27 @@ button {
   border-radius: inherit;
   pointer-events: none;
   transform: scale(1);
-  transition: background var(--cds-dur-snap) var(--cds-ease-out);
+  transition: background var(--cds-dur-snap) var(--cds-ease-out), box-shadow var(--cds-dur-snap) var(--cds-ease-out);
+}
+
+/* Extend small controls to a 40px hit target without changing their visible size. */
+.icon-button, .theme-toggle, .language-button {
+  position: relative;
+}
+
+.icon-button::before, .theme-toggle::before, .language-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 40px);
+  height: max(100%, 40px);
+  translate: -50% -50%;
+}
+
+/* The pills sit 2px apart, so only the height grows. */
+.language-button::before {
+  width: 100%;
 }
 
 .icon-button {
@@ -352,11 +378,21 @@ html.dark .icon-button:hover .button-face {
 }
 
 .theme-symbol {
-  display: inline-flex;
+  display: grid;
+  place-items: center;
+}
+
+.theme-symbol svg {
+  grid-area: 1 / 1;
+  transition-property: opacity, scale, filter;
+  transition-duration: var(--cds-dur-base);
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 html:not(.dark) .theme-sun, html.dark .theme-moon {
-  display: none;
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
 }
 
 .resume {
