@@ -15,18 +15,9 @@
   src: url("fonts/geist-sans-variable.woff2") format("woff2");
 }
 
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/jetbrains-mono-regular.woff2") format("woff2");
-}
-
 :root {
   color-scheme: light;
   --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
-  --cds-font-mono: "JetBrains Mono", ui-monospace, monospace;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
