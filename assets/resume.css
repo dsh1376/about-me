@@ -8,16 +8,25 @@
 }
 
 @font-face {
-  font-family: "Geist Sans";
+  font-family: "Anthropic Sans";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 300 800;
   font-display: swap;
-  src: url("fonts/geist-sans-variable.woff2") format("woff2");
+  src: url("fonts/anthropic-sans-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Anthropic Mono";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("fonts/anthropic-mono-variable.woff2") format("woff2");
 }
 
 :root {
   color-scheme: light;
-  --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
+  --cds-font-sans: "Anthropic Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
+  --cds-font-mono: "Anthropic Mono", "TsangerJinKai02-W04", ui-monospace, "SF Mono", Menlo, monospace;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
