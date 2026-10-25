@@ -119,6 +119,8 @@
   let velocityY = 0;
   let rotation = 0;
   let pointer = null;
+  let dotColor;
+  let shotColor;
 
   function hash(x, y, salt) {
     let result = 0x165667b1 * x + 0x27d4eb2f * y + 69069 * salt | 0;
@@ -149,7 +151,7 @@
     return first + (noise(x, y, salt ^ Math.imul(tick + 1, 0x9e3779b1), scale) - first) * smooth(time - tick);
   }
 
-  function dot(x, y, radius, color = "#87867f") {
+  function dot(x, y, radius, color = dotColor) {
     stars.fillStyle = color;
     stars.beginPath();
     stars.arc(x, y, radius, 0, Math.PI * 2);
@@ -279,7 +281,7 @@
         if (rect && x > rect.left - spacing && x < rect.left + rect.w + spacing
           && y > rect.top - spacing && y < rect.top + rect.h + spacing) continue;
         const radius = (tail === 0 ? 0.267 * spacing : 0.15 * spacing * (1 - tail / 12)) * fade;
-        if (radius >= 0.4) dot(x, y, radius, "#a8a294");
+        if (radius >= 0.4) dot(x, y, radius, shotColor);
       }
     }
   }
@@ -344,6 +346,13 @@
     if (visible && !printing.matches) draw(performance.now());
   }
 
+  function syncSceneTheme() {
+    const style = getComputedStyle(scene);
+    dotColor = style.getPropertyValue("--space-dot").trim();
+    shotColor = style.getPropertyValue("--space-shot").trim();
+    syncScene();
+  }
+
   function resizeScene() {
     width = scene.clientWidth;
     height = scene.clientHeight;
@@ -400,5 +409,7 @@
     syncScene();
   });
   printing.addEventListener("change", syncScene);
+  new MutationObserver(syncSceneTheme).observe(document.documentElement, { attributeFilter: ["class"] });
+  syncSceneTheme();
   resizeScene();
 })();

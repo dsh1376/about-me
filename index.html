@@ -9,13 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" sizes="any">
   <script>
     document.documentElement.classList.add("is-loading");
-    try {
-      const savedTheme = localStorage.getItem("resume-theme");
-      const systemTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      document.documentElement.dataset.theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : systemTheme;
-    } catch {
-      document.documentElement.dataset.theme = "light";
-    }
+    document.documentElement.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     document.documentElement.classList.toggle("dark", document.documentElement.dataset.theme === "dark");
   </script>
   <link rel="stylesheet" href="assets/cds-tokens.css">
@@ -336,7 +330,7 @@
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     const themeButton = document.querySelector(".theme-toggle");
 
-    function applyTheme(theme, persist = true) {
+    function applyTheme(theme) {
       const selected = theme === "dark" ? "dark" : "light";
       const language = copy[document.documentElement.lang] ? document.documentElement.lang : "zh-CN";
       const label = copy[language][selected === "dark" ? "themeToLight" : "themeToDark"];
@@ -347,14 +341,6 @@
       themeButton.setAttribute("aria-label", label);
       themeButton.title = label;
       themeColorMeta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--canvas").trim());
-
-      if (!persist) return;
-
-      try {
-        localStorage.setItem("resume-theme", selected);
-      } catch {
-        return;
-      }
     }
 
     function savedLanguage() {
@@ -550,7 +536,7 @@
         button.setAttribute("aria-pressed", String(button.dataset.language === selected));
       });
 
-      applyTheme(document.documentElement.dataset.theme, false);
+      applyTheme(document.documentElement.dataset.theme);
       revealText();
 
       if (!persist) return;
