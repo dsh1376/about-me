@@ -216,13 +216,6 @@
   </main>
   </div>
 
-  <footer class="space-footer">
-    <div class="space-scene">
-      <canvas class="space-sky" aria-hidden="true"></canvas>
-      <canvas class="space-clawd" aria-hidden="true"></canvas>
-    </div>
-  </footer>
-
   <script>
     const copy = {
       "zh-CN": {
@@ -664,7 +657,7 @@
         // On wide screens the opaque card hides its own area, so skip those cells.
         const card = cardCovers.matches ? resume.getBoundingClientRect() : null;
         buckets.forEach((bucket) => { bucket.length = 0; });
-        // Blue flashes fade back to gray at the same speed whatever the frame rate.
+        // Highlights fade back to gray at the same speed whatever the frame rate.
         const decay = Math.exp(-Math.min(now - previousDraw, 200) / glowFade);
         previousDraw = now;
 
@@ -677,7 +670,7 @@
             const { value, glow } = field(x, y, time, now, waves);
             const cell = row * columns + column;
             heat[cell] *= decay;
-            // A glyph flashes blue only when the advancing front first reaches it, then dissipates.
+            // A glyph lights up when the advancing front first reaches it, then fades.
             // The fixed per-cell threshold scatters the flashes instead of lighting solid runs.
             if (previous[cell] < 0.2 && value >= 0.2 && sparkle[cell] < 0.45) heat[cell] = 1;
             if (glow > 0.5 && sparkle[cell] < glow * 0.7) heat[cell] = Math.max(heat[cell], Math.min(1, glow));

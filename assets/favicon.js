@@ -38,17 +38,18 @@
     context.imageSmoothingEnabled = false;
     frames = Array.from({ length: frameCount }, (_, index) => {
       context.clearRect(0, 0, 32, 32);
-      const phase = index / frameCount * Math.PI * 2;
-      context.drawImage(image, 0, Math.sin(phase) * 0.8, 32, 32);
-      // One short glint per float cycle keeps the small icon legible.
-      const glint = Math.max(0, 1 - Math.abs(index - 12) / 4);
-      if (glint > 0) {
-        context.globalAlpha = glint;
-        context.fillStyle = "#f5db9a";
-        context.fillRect(28, 2, 1, 5);
-        context.fillRect(26, 4, 5, 1);
-        context.globalAlpha = 1;
+      context.drawImage(image, 0, 0, 32, 32);
+      // Two staggered wisps rise from the tea without moving the character.
+      context.fillStyle = "#a8a69d";
+      for (let wisp = 0; wisp < 2; wisp++) {
+        const progress = (index / frameCount * 2 + wisp / 2) % 1;
+        const x = 24 + wisp * 3;
+        const y = Math.round(12 - progress * 8);
+        context.globalAlpha = Math.sin(progress * Math.PI) * 0.8;
+        context.fillRect(x, y, 1, 3);
+        context.fillRect(x + 1, y - 1, 1, 2);
       }
+      context.globalAlpha = 1;
       return canvas.toDataURL("image/png");
     });
     sync();

@@ -8,32 +8,32 @@
 }
 
 @font-face {
-  font-family: "Anthropic Sans";
+  font-family: "Geist Sans";
   font-style: normal;
-  font-weight: 300 800;
+  font-weight: 100 900;
   font-display: swap;
-  src: url("fonts/anthropic-sans-variable.woff2") format("woff2");
+  src: url("fonts/geist-sans-variable.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "Anthropic Mono";
+  font-family: "Ioskeley Mono";
   font-style: normal;
-  font-weight: 300 800;
+  font-weight: 400;
   font-display: swap;
-  src: url("fonts/anthropic-mono-variable.woff2") format("woff2");
+  src: url("fonts/ioskeley-mono-regular.woff2") format("woff2");
 }
 
 :root {
   color-scheme: light;
-  --cds-font-sans: "Anthropic Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
-  --cds-font-mono: "Anthropic Mono", "TsangerJinKai02-W04", ui-monospace, "SF Mono", Menlo, monospace;
+  --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
+  --cds-font-mono: "Ioskeley Mono", "TsangerJinKai02-W04", ui-monospace, "SF Mono", Menlo, monospace;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
   --body-copy: var(--cds-gray-700);
   --muted: var(--cds-gray-500);
   --line: color-mix(in srgb, var(--cds-gray-100) 65%, transparent);
-  --accent-ink: color-mix(in srgb, var(--cds-clay-emphasized) 76%, var(--cds-gray-900));
+  --accent-ink: #000000;
   --page-cursor: url("cursor.svg") 3 3;
   font-family: var(--cds-font-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
   font-synthesis: none;
@@ -45,7 +45,7 @@ html.dark {
   --body-copy: var(--cds-gray-100);
   --muted: var(--cds-gray-300);
   --line: color-mix(in srgb, var(--cds-gray-700) 65%, transparent);
-  --accent-ink: var(--cds-clay);
+  --accent-ink: #ffffff;
   --cds-shadow-segmented-thumb: inset 0 0 0 1px color-mix(in srgb, var(--cds-gray-0) 8%, transparent), var(--cds-shadow-sm);
 }
 
@@ -91,7 +91,6 @@ body {
 
 html.dark .ascii-ripples {
   --ripple-ink: var(--cds-gray-300);
-  --ripple-glow: #26619c;
 }
 
 .page-actions, .resume {
@@ -100,7 +99,7 @@ html.dark .ascii-ripples {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--cds-clay) 30%, transparent);
+  background: color-mix(in srgb, var(--accent-ink) 30%, transparent);
   color: var(--ink);
 }
 
@@ -222,7 +221,7 @@ button {
   width: 3px;
   height: 3px;
   border-radius: var(--cds-radius-full);
-  background: var(--cds-clay);
+  background: var(--accent-ink);
   animation: 1.9s var(--cds-ease-dots) infinite timeline-quiet-dot;
 }
 
@@ -431,7 +430,7 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
   width: 6px;
   height: 6px;
   border-radius: var(--cds-radius-full);
-  background: var(--cds-clay);
+  background: var(--accent-ink);
 }
 
 .name {
@@ -582,7 +581,7 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
 }
 
 .achievement-list li::marker {
-  color: var(--cds-clay);
+  color: var(--accent-ink);
   font-size: 10px;
 }
 
@@ -599,7 +598,7 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
   margin-left: 8px;
   padding: 2px 7px;
   border-radius: var(--cds-radius-xs);
-  background: color-mix(in srgb, var(--cds-clay) 10%, transparent);
+  background: color-mix(in srgb, var(--accent-ink) 10%, transparent);
   color: var(--accent-ink);
   font-size: 11px;
   font-weight: var(--cds-weight-medium);
@@ -679,7 +678,6 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
 .skill-row--heading dt {
   color: var(--muted);
   font-size: 11px;
-  font-weight: var(--cds-weight-medium);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -815,7 +813,7 @@ html:not(.dark) .theme-sun, html.dark .theme-moon {
     --muted: var(--cds-gray-500);
     --body-copy: var(--cds-gray-700);
     --line: var(--cds-gray-100);
-    --accent-ink: var(--cds-gray-700);
+    --accent-ink: #000000;
     --cds-weight-medium: 500;
     --cds-weight-semibold: 600;
   }
