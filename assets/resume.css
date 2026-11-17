@@ -1,9 +1,9 @@
 @font-face {
-  font-family: "TsangerJinKai02-W04";
+  font-family: "Clear Han Serif";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("fonts/TsangerJinKai02-W04.woff") format("woff");
+  src: url("fonts/clear-han-serif-regular.woff2") format("woff2");
   unicode-range: U+2E80-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-323AF;
 }
 
@@ -25,8 +25,8 @@
 
 :root {
   color-scheme: light;
-  --cds-font-sans: "Geist Sans", "TsangerJinKai02-W04", system-ui, -apple-system, sans-serif;
-  --cds-font-mono: "Ioskeley Mono", "TsangerJinKai02-W04", ui-monospace, "SF Mono", Menlo, monospace;
+  --cds-font-sans: "Geist Sans", "Clear Han Serif", system-ui, -apple-system, sans-serif;
+  --cds-font-mono: "Ioskeley Mono", "Clear Han Serif", ui-monospace, "SF Mono", Menlo, monospace;
   --paper: var(--cds-surface-1);
   --canvas: var(--cds-surface-0);
   --ink: var(--cds-gray-800);
